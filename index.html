@@ -16,6 +16,7 @@
         align-items: center;
         overflow: hidden;
       }
+
       #road {
         background: url(assest/image/istockphoto-1425173064-612x612.jpg)
           repeat-y;
@@ -24,6 +25,7 @@
         position: relative;
         overflow: hidden;
       }
+
       #start {
         position: absolute;
         top: 77vh;
@@ -35,67 +37,45 @@
         padding: 10px 20px;
         border-radius: 10px;
         cursor: pointer;
+        z-index: 10;
       }
-      #score {
+
+      #score,
+      #level {
         position: absolute;
-        top: 20px;
-        left: 20px;
         font-size: 2rem;
         color: white;
+        z-index: 5;
       }
+
+      #score {
+        top: 20px;
+        left: 20px;
+      }
+
+      #level {
+        top: 20px;
+        right: 20px;
+      }
+
       .enemycar {
         position: absolute;
-        scale: 0.2;
         visibility: hidden;
+        transform: scale(0.15);
       }
-      #enemycar1 {
-        top: -100px;
-        left: -80px;
-      }
-      #enemycar2 {
-        top: -300px;
-        left: 195px;
-      }
-      #enemycar3 {
-        top: 155px;
-        left: 190px;
-      }
+
       #myCar {
         position: absolute;
         bottom: -288px;
         left: -7%;
-        transform: translateX(-50%);
-        scale: 0.25;
-      }
-      @keyframes ecar1 {
-        0% {
-          top: -150px;
-        }
-        100% {
-          top: 100vh;
-        }
-      }
-      @keyframes ecar2 {
-        0% {
-          top: -300px;
-        }
-        100% {
-          top: 100vh;
-        }
-      }
-      @keyframes ecar3 {
-        0% {
-          top: -500px;
-        }
-        100% {
-          top: 100vh;
-        }
+        transform: translateX(-50%) scale(0.2);
       }
     </style>
   </head>
   <body>
     <div id="road">
       <div id="score">Score : 0</div>
+      <div id="level">Level : 1</div>
       <button id="start">Start</button>
 
       <img
@@ -116,124 +96,16 @@
         src="assest/image/whiteCar.png"
         alt="Enemy Car 3"
       />
+      <img
+        id="enemycar4"
+        class="enemycar"
+        src="assest/image/whiteCar.png"
+        alt="Enemy Car 4"
+      />
       <img id="myCar" src="assest/image/defnder.png" alt="My Car" />
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      $(document).ready(function () {
-        let score = 0;
-        let gameStarted = false;
-        let carPositionX = -7;
-        let carPositionY = 39;
-
-        const enemyCar1 = $("#enemycar1");
-        const enemyCar2 = $("#enemycar2");
-        const enemyCar3 = $("#enemycar3");
-        const myCar = $("#myCar");
-
-        let gameInterval;
-
-        $(document).keydown(function (e) {
-          if (gameStarted) {
-            if (e.key === "ArrowLeft" && carPositionX > 0) {
-              carPositionX -= 5;
-            }
-            if (e.key === "ArrowRight" && carPositionX < 80) {
-              carPositionX += 5;
-            }
-            if (e.key === "ArrowUp" && carPositionY > 0) {
-              carPositionY -= 5;
-            }
-            if (e.key === "ArrowDown" && carPositionY < 80) {
-              carPositionY += 5;
-            }
-            myCar.css({
-              left: carPositionX + "%",
-              top: carPositionY + "%",
-            });
-          }
-        });
-
-        $("#start").click(function () {
-          if (!gameStarted) {
-            gameStarted = true;
-            $("#start").hide();
-
-            enemyCar1.css({
-              visibility: "visible",
-              animation: "ecar1 infinite linear 8s",
-            });
-            enemyCar2.css({
-              visibility: "visible",
-              animation: "ecar2 infinite linear 10s",
-            });
-            enemyCar3.css({
-              visibility: "visible",
-              animation: "ecar3 infinite linear 15s",
-            });
-
-            score = 0;
-            $("#score").text("Score : " + score);
-
-            gameInterval = setInterval(moveEnemyCars, 50);
-          }
-        });
-
-        function moveEnemyCars() {
-          $(".enemycar").each(function () {
-            let car = $(this);
-            let currentTop = parseInt(car.css("top"));
-            let newTop = currentTop + 5;
-
-            if (newTop > 100) {
-              newTop = -100;
-              score++;
-              $("#score").text("Score : " + score);
-
-              if (score > 50) {
-                newTop += 2;
-              }
-              if (score > 100) {
-                newTop += 2;
-              }
-            }
-
-            car.css("top", newTop + "px");
-
-            if (checkCollision(myCar, car)) {
-              gameOver();
-            }
-          });
-        }
-
-        function checkCollision(car1, car2) {
-          let car1Pos = car1[0].getBoundingClientRect();
-          let car2Pos = car2[0].getBoundingClientRect();
-
-          return !(
-            car1Pos.right < car2Pos.left ||
-            car1Pos.left > car2Pos.right ||
-            car1Pos.bottom < car2Pos.top ||
-            car1Pos.top > car2Pos.bottom
-          );
-        }
-
-        function gameOver() {
-          clearInterval(gameInterval);
-          alert("Game Over! Your score is: " + score);
-          resetGame();
-        }
-
-        function resetGame() {
-          myCar.css({ left: "-7%", top: "39%" });
-          enemyCar1.css("top", "-100px");
-          enemyCar2.css("top", "-300px");
-          enemyCar3.css("top", "155px");
-          gameStarted = false;
-          $("#start").show();
-        }
-      });
-    </script>
+    <script src="/index.js"></script>
   </body>
 </html>
